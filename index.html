@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="./styles.css">
+	<title>TicTacToehold</title>
+</head>
+<body>
+	<h1>Tic Tac Toehold</h1>
+	<h3 id="winnerMessage"></h3>
+	<button onclick="resetGame()">Reset</button>
+	<div class="wrapper">
+		<div class="box" id="box00">00<h1></h1></div>
+		<div class="box" id="box01">01<h1></h1></div>
+		<div class="box" id="box02">02<h1></h1></div>
+		<div class="box" id="box10">10<h1></h1></div>
+		<div class="box" id="box11">11<h1></h1></div>
+		<div class="box" id="box12">12<h1></h1></div>
+		<div class="box" id="box20">20<h1></h1></div>
+		<div class="box" id="box21">21<h1></h1></div>
+		<div class="box" id="box22">22<h1></h1></div>
+	</div>
+	<!--  <svg height="210" width="500">
+  		<line x1="0" y1="0" x2="200" y2="200" style="stroke:rgb(255,0,0);stroke-width:2" />
+	</svg> -->
+	<script>
+		let turn = 1;
+
+		let board = {
+			'00': 'free',
+			'01': 'free',
+			'02': 'free',
+			'10': 'free',
+			'11': 'free',
+			'12': 'free',
+			'20': 'free',
+			'21': 'free',
+			'22': 'free'
+		}
+
+		function currentPlayer() {
+			if (turn%2 == 0) return 'O';
+			return 'X'
+		}
+
+		function removeWinnerMessage() {
+			document.querySelector('#winnerMessage').textContent = ''
+		}
+
+		function displayWinnerMessage() {
+			document.querySelector('#winnerMessage').textContent = returnWinner() + ' has won in glorious fashion'
+		}
+
+		function updateUI() {
+			for (idx in board) {
+				updateUIField(board[idx], idx)
+			}
+			if (isGameOver()) {
+				displayWinnerMessage()
+			}
+		}
+
+		function updateUIField(val, idx) {
+			let output = ''
+			if (val == 'X') {output = 'X'}
+			if (val == 'O') {output = 'O'}
+			document.querySelector('#box' + idx + ' h1').textContent = output
+		}
+
+		// returns 'X', 'O' or 'nobody'
+		// TODO: in the name of god, refactor
+		function returnWinner() {
+			// check if columns have winner
+			for(let i = 0; i < 3; i++){
+				let firstIdx =	'0' + i;
+				let secondIdx = '1' + i;
+				let thirdIdx = '2' + i;
+				if (board[firstIdx] !== 'free' && board[firstIdx] == board[secondIdx] && board[firstIdx] == board[thirdIdx]) {
+					console.log(`${firstIdx} ${secondIdx} ${thirdIdx}`)
+					return(board[firstIdx])
+				}
+			}
+			// check if columns have winner
+			for(let i = 0; i < 3; i++){
+				let firstIdx =	i + '0';
+				let secondIdx = i + '1';
+				let thirdIdx = i + '2';
+				if (board[firstIdx] !== 'free' && board[firstIdx] == board[secondIdx] && board[firstIdx] == board[thirdIdx]) {
+					console.log(`${firstIdx} ${secondIdx} ${thirdIdx}`)
+					return(board[firstIdx])
+				}
+			}
+			// check if diagonal starting top left has winner
+			let tlFirstIdx = '00'	
+			let tlSecondIdx = '11'
+			let tlThirdIdx = '22'
+			if (board[tlFirstIdx] !== 'free' && board[tlFirstIdx] == board[tlSecondIdx] && board[tlFirstIdx] == board[tlThirdIdx]) {
+				console.log(`${tlFirstIdx} ${tlSecondIdx} ${tlThirdIdx}`)
+				return(board[tlFirstIdx])
+			}
+
+			// check if diagonal starting bottom left has winner
+			for(let i = 0; i < 3; i++){
+				let blFirstIdx = '20';
+				let blSecondIdx = '11';
+				let blThirdIdx = '02';
+				if (board[blFirstIdx] !== 'free' && board[blFirstIdx] == board[blSecondIdx] && board[blFirstIdx] == board[blThirdIdx]) {
+					console.log(`${blFirstIdx} ${blSecondIdx} ${blThirdIdx}`)
+					return(board[blFirstIdx])
+				}
+			}
+
+			return('nobody')
+		}
+
+
+
+		function resetGame() {
+			board = {
+				'00': 'free',
+				'01': 'free',
+				'02': 'free',
+				'10': 'free',
+				'11': 'free',
+				'12': 'free',
+				'20': 'free',
+				'21': 'free',
+				'22': 'free'
+			}
+			turn = 1
+			removeWinnerMessage();
+			updateUI();
+		}
+
+		function isGameOver() {
+			if (Object.values(board).every((val) => val !=='free')) return true;
+			let winner = returnWinner()
+			if (winner === 'X' || winner === 'O') return true
+			return false
+		}
+
+		function initializeGame() {
+			for (idx in board) {
+				document.querySelector('#box' + idx).addEventListener('click', clickField)
+			}
+		}
+
+		function clickField(event) {
+			let coordinate = this.id.slice(3);
+			if (isGameOver()) return;
+			if (board[coordinate] !== 'free') return;
+			board[coordinate] = currentPlayer()
+			turn++;
+			updateUI();
+		}
+
+		initializeGame()
+	</script>
+</body>
+</html>

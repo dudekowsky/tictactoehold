@@ -1,0 +1,15 @@
+body {
+	background: #ddd;
+}
+
+.wrapper {
+	display: grid;
+	grid-template-columns: 120px 120px 120px;
+	grid-template-rows: 120px 120px 120px;
+	grid-gap: 20px;
+}
+.box {
+	border: 1px solid black;
+	background: white;
+	text-align: center;
+}

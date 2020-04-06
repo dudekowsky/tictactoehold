@@ -84,10 +84,10 @@
 		}
 
 		function generateWLC() {
-			let rawX1 = Number(winningLine.start.charAt(0))
-			let rawY1 = Number(winningLine.start.charAt(1))
-			let rawX2 = Number(winningLine.end.charAt(0))
-			let rawY2 = Number(winningLine.end.charAt(1))
+			let rawY1 = Number(winningLine.start.charAt(0))
+			let rawX1 = Number(winningLine.start.charAt(1))
+			let rawY2 = Number(winningLine.end.charAt(0))
+			let rawX2 = Number(winningLine.end.charAt(1))
 			let end = winningLine.end
 			columnWidth = 120;
 			rowHeight = 120;
@@ -96,6 +96,7 @@
 			centerX2 = 140 * rawX2 + 60
 			centerY1 = 140 * rawY1 + 60
 			centerY2 = 140 * rawY2 + 60
+			// TODO: start in the outer corner
 			return {
 				'x1': centerX1,
 				'y1': centerY1,

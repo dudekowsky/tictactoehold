@@ -8,22 +8,26 @@
 	<h1>Tic Tac Toehold</h1>
 	<h3 id="winnerMessage"></h3>
 	<button onclick="resetGame()">Reset</button>
-	<div class="wrapper">
-		<div class="box" id="box00">00<h1></h1></div>
-		<div class="box" id="box01">01<h1></h1></div>
-		<div class="box" id="box02">02<h1></h1></div>
-		<div class="box" id="box10">10<h1></h1></div>
-		<div class="box" id="box11">11<h1></h1></div>
-		<div class="box" id="box12">12<h1></h1></div>
-		<div class="box" id="box20">20<h1></h1></div>
-		<div class="box" id="box21">21<h1></h1></div>
-		<div class="box" id="box22">22<h1></h1></div>
-	</div>
-	<!--  <svg height="210" width="500">
-  		<line x1="0" y1="0" x2="200" y2="200" style="stroke:rgb(255,0,0);stroke-width:2" />
-	</svg> -->
+	<div id="game-container">
+		<div class="wrapper">	 
+			<div class="box" id="box00">00<h1></h1></div>
+			<div class="box" id="box01">01<h1></h1></div>
+			<div class="box" id="box02">02<h1></h1></div>
+			<div class="box" id="box10">10<h1></h1></div>
+			<div class="box" id="box11">11<h1></h1></div>
+			<div class="box" id="box12">12<h1></h1></div>
+			<div class="box" id="box20">20<h1></h1></div>
+			<div class="box" id="box21">21<h1></h1></div>
+			<div class="box" id="box22">22<h1></h1></div>
+		</div>
+ 	</div>
 	<script>
 		let turn = 1;
+
+		let winningLine = {
+			start: 0,
+			end: 0
+		}
 
 		let board = {
 			'00': 'free',
@@ -56,7 +60,54 @@
 			}
 			if (isGameOver()) {
 				displayWinnerMessage()
+				drawWinningLine()
 			}
+		}
+		//  <svg xmlns="http://www.w3.org/2000/svg" id="crossingLine">
+		//   <line x1="200" y1="0" x2="200" y2="400" stroke="red" stroke-width="3" />
+		// </svg>
+		function drawWinningLine() {
+			xmlns = "http://www.w3.org/2000/svg";
+			winningLineCoordinates = generateWLC() 
+			svg = document.createElementNS(xmlns, 'svg')
+			svg.setAttribute('xmlns', "http://www.w3.org/2000/svg")
+			svg.id = "crossingLine"
+			line = document.createElementNS(xmlns, 'line')
+			line.setAttribute('x1', winningLineCoordinates['x1'])
+			line.setAttribute('x2', winningLineCoordinates['x2'])
+			line.setAttribute('y1', winningLineCoordinates['y1'])
+			line.setAttribute('y2', winningLineCoordinates['y2'])
+			line.setAttribute('stroke', "red")
+			line.setAttribute('stroke-width', "3")
+			svg.appendChild(line)
+			document.querySelector('#game-container').appendChild(svg)
+		}
+
+		function generateWLC() {
+			let rawX1 = Number(winningLine.start.charAt(0))
+			let rawY1 = Number(winningLine.start.charAt(1))
+			let rawX2 = Number(winningLine.end.charAt(0))
+			let rawY2 = Number(winningLine.end.charAt(1))
+			let end = winningLine.end
+			columnWidth = 120;
+			rowHeight = 120;
+			gridDistance = 20;
+			centerX1 = 140 * rawX1 + 60
+			centerX2 = 140 * rawX2 + 60
+			centerY1 = 140 * rawY1 + 60
+			centerY2 = 140 * rawY2 + 60
+			return {
+				'x1': centerX1,
+				'y1': centerY1,
+				'x2': centerX2,
+				'y2': centerY2
+			}
+
+		}
+
+		function removeWinningLine() {
+			svg = document.querySelector('svg')
+			svg.parentElement.removeChild(svg)
 		}
 
 		function updateUIField(val, idx) {
@@ -75,7 +126,8 @@
 				let secondIdx = '1' + i;
 				let thirdIdx = '2' + i;
 				if (board[firstIdx] !== 'free' && board[firstIdx] == board[secondIdx] && board[firstIdx] == board[thirdIdx]) {
-					console.log(`${firstIdx} ${secondIdx} ${thirdIdx}`)
+					winningLine.start = firstIdx
+					winningLine.end = thirdIdx
 					return(board[firstIdx])
 				}
 			}
@@ -85,7 +137,8 @@
 				let secondIdx = i + '1';
 				let thirdIdx = i + '2';
 				if (board[firstIdx] !== 'free' && board[firstIdx] == board[secondIdx] && board[firstIdx] == board[thirdIdx]) {
-					console.log(`${firstIdx} ${secondIdx} ${thirdIdx}`)
+					winningLine.start = firstIdx
+					winningLine.end = thirdIdx
 					return(board[firstIdx])
 				}
 			}
@@ -94,7 +147,8 @@
 			let tlSecondIdx = '11'
 			let tlThirdIdx = '22'
 			if (board[tlFirstIdx] !== 'free' && board[tlFirstIdx] == board[tlSecondIdx] && board[tlFirstIdx] == board[tlThirdIdx]) {
-				console.log(`${tlFirstIdx} ${tlSecondIdx} ${tlThirdIdx}`)
+				winningLine.start = tlFirstIdx
+				winningLine.end = tlThirdIdx
 				return(board[tlFirstIdx])
 			}
 
@@ -104,15 +158,14 @@
 				let blSecondIdx = '11';
 				let blThirdIdx = '02';
 				if (board[blFirstIdx] !== 'free' && board[blFirstIdx] == board[blSecondIdx] && board[blFirstIdx] == board[blThirdIdx]) {
-					console.log(`${blFirstIdx} ${blSecondIdx} ${blThirdIdx}`)
+					winningLine.start = blFirstIdx
+					winningLine.end = blThirdIdx
 					return(board[blFirstIdx])
 				}
 			}
 
 			return('nobody')
 		}
-
-
 
 		function resetGame() {
 			board = {
@@ -127,7 +180,12 @@
 				'22': 'free'
 			}
 			turn = 1
+			winningLine = {
+				start: 0,
+				end: 0 
+			}
 			removeWinnerMessage();
+			removeWinningLine();
 			updateUI();
 		}
 

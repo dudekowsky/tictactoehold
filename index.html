@@ -92,16 +92,22 @@
 			columnWidth = 120;
 			rowHeight = 120;
 			gridDistance = 20;
-			centerX1 = 140 * rawX1 + 60
-			centerX2 = 140 * rawX2 + 60
-			centerY1 = 140 * rawY1 + 60
-			centerY2 = 140 * rawY2 + 60
+			centerOfX1Grid = 140 * rawX1 + 60
+			centerOfX2Grid = 140 * rawX2 + 60
+			centerOfY1Grid = 140 * rawY1 + 60
+			centerOfY2Grid = 140 * rawY2 + 60
+
+			middlepointX = (centerOfX1Grid + centerOfX2Grid) / 2
+			middlepointY = (centerOfY1Grid + centerOfY2Grid) / 2
+			deltaX = centerOfX2Grid - centerOfX1Grid
+			deltaY = centerOfY2Grid - centerOfY1Grid
+
 			// TODO: start in the outer corner
 			return {
-				'x1': centerX1,
-				'y1': centerY1,
-				'x2': centerX2,
-				'y2': centerY2
+				'x1': middlepointX - 5 * deltaX / 7,
+				'y1': middlepointY - 5 * deltaY / 7,
+				'x2': middlepointX + 5 * deltaX / 7,
+				'y2': middlepointY + 5 * deltaY / 7
 			}
 
 		}
